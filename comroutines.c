@@ -70,7 +70,7 @@ void TimerCloseInTread()
 	}
 	struct timeval begin;
 	gettimeofday(&begin,NULL);
-	int rezsl=usleep(2000000);
+	int rezsl=usleep(4000000);
 	if (rezsl!=0)
 	{
 		Log("Stop Timer killed");

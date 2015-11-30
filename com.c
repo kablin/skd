@@ -65,12 +65,14 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 	while(MaincikleStop!=1)
 	{
 		DIstate_ =get_di(1);
+
 		if (DIstate==1 && DIstate_==0)
 		{
 			DIstate=0;
 			WriteEntranceLogDb("turn","","");
 			CloseTripod(1);
 			CloseTripod(0);
+			Log("turn");
 
 		}
 		else if (DIstate==0 && DIstate_==1) DIstate=1;
