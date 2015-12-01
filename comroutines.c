@@ -70,7 +70,7 @@ void TimerCloseInTread()
 	}
 	struct timeval begin;
 	gettimeofday(&begin,NULL);
-	int rezsl=usleep(4000000);
+	int rezsl=usleep(5000000);
 	if (rezsl!=0)
 	{
 		Log("Stop Timer killed");
@@ -135,7 +135,17 @@ int CardReaded(char *Card,unsigned char com)
 	time(&x);
     char Enter = 0;
     char* Direction="0";
-    if (com==1) 
+
+
+ /*   char * s=malloc(100*sizeof(char));
+    		sprintf(s,"%d  ",com);
+    		puts(s);
+    		free (s);*/
+
+
+
+
+    if (com==2)
 	{
 		Enter = 1;
 		Direction="1";

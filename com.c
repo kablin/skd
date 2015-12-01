@@ -64,7 +64,22 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 	int DIstate_;
 	while(MaincikleStop!=1)
 	{
+		DIstate_ =get_di(0);
+
+		char * s=malloc(100*sizeof(char));
+		sprintf(s,"%d  ",DIstate_);
+		puts(s);
+		free (s);
+
+
+
 		DIstate_ =get_di(1);
+
+		s=malloc(100*sizeof(char));
+		sprintf(s,"%d  ",DIstate_);
+		puts(s);
+		free (s);
+
 
 		if (DIstate==1 && DIstate_==0)
 		{
