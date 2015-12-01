@@ -83,6 +83,7 @@ void TimerCloseInTread()
 	if (TripodIsOpenout==1) {
 		set_do_buf(2,0);  Log("Close out by timer");
 	}
+	
 	TripodIsOpenin = 0;
 	TripodIsOpenout = 0;
 	char x[10];
@@ -94,6 +95,7 @@ void TimerCloseInTread()
 
 void CloseTripod(char In)
 {
+	
 	WaitForTurn = 0;
 	pthread_kill(Closetrip,SIGUSR2);
 	if (In==1)
@@ -106,7 +108,9 @@ void CloseTripod(char In)
 		TripodIsOpenout = 0;
 		set_do_buf(2,0);
 	}
+
 }
+
 void OpenTripod(char In)
 {
  	pthread_kill(Closetrip,SIGUSR2);
@@ -135,7 +139,7 @@ int CardReaded(char *Card,unsigned char com)
 	time(&x);
     char Enter = 0;
     char* Direction="0";
-    if (com==1) 
+    if (com==2) 
 	{
 		Enter = 1;
 		Direction="1";
@@ -145,18 +149,22 @@ int CardReaded(char *Card,unsigned char com)
     // Доступ разрешен
     if((atoi(Access)==1) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
     {
+    	
+    	OpenTripod(Enter);
+    	WriteEntranceLogDb((char*)Card,Direction,Access);
     	Log("Access OK");
         pthread_kill(Closetrip,SIGUSR2);
-    	OpenTripod(Enter);
     }
     else if (atoi(Access)==1)
     {
+    	WriteEntranceLogDb((char*)Card,Direction,"5");
     	Log("Turniket is busy");
     	WriteLogDb("Turniket is busy");
 	}
     // Даоступ запрещен
     else if (atoi(Access)==0)
     {
+    	WriteEntranceLogDb((char*)Card,Direction,Access);
     	Log("NO Access");
     	CloseTripod(Enter);
 	}
@@ -167,6 +175,6 @@ int CardReaded(char *Card,unsigned char com)
 		 WriteLogDb("Unknown CARD");
 	  	 CloseTripod(Enter);
 	}
-	WriteEntranceLogDb((char*)Card,Direction,Access);
+	
     return 0;
 }
