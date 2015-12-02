@@ -34,8 +34,36 @@
 
 
 int MaincikleStop=0;
+
+unsigned int Sleepdelay;
+unsigned int DIin;
+unsigned int DIout;
+
+unsigned int DOin;
+unsigned int DOout;
+
+unsigned int comin;
+unsigned int comout;
+
+
 int main(int argc, char *argv[])
 {
+
+	FILE *f;
+	f=fopen("params.txt","r");
+	fscanf(f,"%d",&Sleepdelay);
+	fscanf(f,"%d",&DIin);
+	fscanf(f,"%d",&DIout);
+	fscanf(f,"%d",&DOin);
+	fscanf(f,"%d",&DOout);
+
+	fscanf(f,"%d",&comin);
+	fscanf(f,"%d",&comout);
+	fclose(f);
+
+
+
+
 	system("clear");
 	pthread_t COMRthread,COM2Rthread;
 	struct ser_conf Ser1;
@@ -46,23 +74,23 @@ int main(int argc, char *argv[])
 	Ser1.SerIFlags = 0;
 	OpenDb("");
 
-	set_do_buf(2,0);
-	set_do_buf(1,0);
+	set_do_buf(DOin,0);
+	set_do_buf(DOout,0);
 
-	if(com_Init(COM1, &Ser1))
+	if(com_Init(comin, &Ser1))
 	{
-		pthread_create(&COMRthread, NULL,(pthread_startroutine_t)COM_read_thread,(void *) COM1);
+		pthread_create(&COMRthread, NULL,(pthread_startroutine_t)COM_read_thread,(void *) comin);
 
 	}
 	else {
-			fprintf(stderr,"Could not create COM%d read thread \n\n", COM1+1);
+			fprintf(stderr,"Could not create COM%d read thread \n\n", comin+1);
 		}
-	if(com_Init(COM3, &Ser1))
+	if(com_Init(comout, &Ser1))
 	{
-		pthread_create(&COM2Rthread,NULL,(pthread_startroutine_t)COM2_read_thread,(void *) COM3);
+		pthread_create(&COM2Rthread,NULL,(pthread_startroutine_t)COM2_read_thread,(void *) comout);
 	}
 	else {
-		fprintf(stderr,"Could not create COM%d read thread \n\n", COM3+1);
+		fprintf(stderr,"Could not create COM%d read thread \n\n", comout+1);
 	}
 
 

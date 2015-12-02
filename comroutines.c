@@ -35,6 +35,7 @@
 #include <hwdapi.h>
 #include <LocalDB.h>
 #include <comroutines.h>
+#include <simplesqlite3.h>
 
 //#include "RStest.h"
 
@@ -70,7 +71,7 @@ void TimerCloseInTread()
 	}
 	struct timeval begin;
 	gettimeofday(&begin,NULL);
-	int rezsl=usleep(4000000);
+	int rezsl=usleep(Sleepdelay);
 	if (rezsl!=0)
 	{
 		Log("Stop Timer killed");
@@ -78,10 +79,10 @@ void TimerCloseInTread()
 	}
 	WaitForTurn = 0;
 	if (TripodIsOpenin==1) {
-		set_do_buf(1,0); Log("Close in by timer");
+		set_do_buf(DOin,0); Log("Close in by timer");
 	}
 	if (TripodIsOpenout==1) {
-		set_do_buf(2,0);  Log("Close out by timer");
+		set_do_buf(DOout,0);  Log("Close out by timer");
 	}
 	
 	TripodIsOpenin = 0;
@@ -101,12 +102,12 @@ void CloseTripod(char In)
 	if (In==1)
 	{
 		TripodIsOpenin = 0;
-		set_do_buf(1,0);
+		set_do_buf(DOin,0);
 	}
 	else
 	{
 		TripodIsOpenout = 0;
-		set_do_buf(2,0);
+		set_do_buf(DOout,0);
 	}
 
 }
@@ -118,7 +119,7 @@ void OpenTripod(char In)
     if (In==1)
     {
 	   TripodIsOpenin = 1;
-	   set_do_buf(1,1);
+	   set_do_buf(DOin,1);
 
       	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
        	pthread_detach(Closetrip);
@@ -126,7 +127,7 @@ void OpenTripod(char In)
    else
    {
 	   TripodIsOpenout = 1;
-	   set_do_buf(2,1);
+	   set_do_buf(DOout,1);
 	   pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
 	   pthread_detach(Closetrip);
 

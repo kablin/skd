@@ -64,7 +64,7 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 	int DIstate_;
 	while(MaincikleStop!=1)
 	{
-		DIstate_ =get_di(1);
+		DIstate_ =get_di(DIin);
 		if (DIstate==0 && DIstate_==1)
 		{
 			Log("Close 1");
@@ -118,7 +118,7 @@ int com2_Read  (unsigned char Port,unsigned char *bytes)
 	int DIstate_;
 	while(MaincikleStop!=1)
 	{
-		DIstate_ =get_di(2);
+		DIstate_ =get_di(DIout);
 		if (DIstate==0 && DIstate_==1)
 		{
 			Log("Close 0");
