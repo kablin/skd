@@ -148,13 +148,14 @@ int CardReaded(char *Card,unsigned char com)
 
     char* Access=FindCard(Card);
     // Доступ разрешен
-    if((atoi(Access)==1) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
+    if((atoi(Access)==1 || atoi(Access)==3) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
     {
     	
-    	OpenTripod(Enter);
+    	
+        pthread_kill(Closetrip,SIGUSR2);
+        OpenTripod(Enter);
     	WriteEntranceLogDb((char*)Card,Direction,Access);
     	Log("Access OK");
-        pthread_kill(Closetrip,SIGUSR2);
     }
     else if (atoi(Access)==1)
     {
