@@ -54,8 +54,6 @@ extern int test();
 
 int config_errors(int r);
 int CardReaded(char *Card,unsigned char com);
-
-extern void CloseTripod(char In);
 //extern int com_Init ( unsigned char Port);
 
 //int com_Write( void * bytes, int numbytes);

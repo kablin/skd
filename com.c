@@ -8,8 +8,6 @@
 #define _REENTRANT
 #define _MULTI_THREADED
 #include "simplesqlite3.h"
-#include "comroutines.h"
-#include "hwdapi.h"
 #define COM_MAX  4
 typedef struct
 {
@@ -60,22 +58,12 @@ int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
 int com_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
-	int DIstate=0;
-	int DIstate_;
 	while(MaincikleStop!=1)
 	{
-		DIstate_ =get_di(DIin);
-		if (DIstate==0 && DIstate_==1)
-		{
-			Log("Close 1");
-			DIstate=1;
-			CloseTripod(1);
-		}
-		else if (DIstate==1 && DIstate_==0) DIstate=0;
 		struct timeval timeout;
     	int rc, sfd;
 		timeout.tv_sec = 0;
-    	timeout.tv_usec = 100000;
+    	timeout.tv_usec = 1000;
     	fd_set fds;
     	sfd = ports[Port]->fd;
     	FD_ZERO(&fds);
@@ -114,22 +102,12 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 int com2_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
-	int DIstate=0;
-	int DIstate_;
 	while(MaincikleStop!=1)
 	{
-		DIstate_ =get_di(DIout);
-		if (DIstate==0 && DIstate_==1)
-		{
-			Log("Close 0");
-			DIstate=1;
-			CloseTripod(0);
-		}
-		else if (DIstate==1 && DIstate_==0) DIstate=0;
 		struct timeval timeout;
     	int rc, sfd;
 		timeout.tv_sec = 0;
-    	timeout.tv_usec = 100000;
+    	timeout.tv_usec = 1000;
     	fd_set fds;
     	sfd = ports[Port]->fd;
     	FD_ZERO(&fds);

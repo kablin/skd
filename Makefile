@@ -5,7 +5,7 @@ CROSS=/home/user/ARMLinux/buildroot/build_arm/staging_dir/bin/arm-linux-
 ARCH=arm
 
 
-LIBS = /home/user/ARMLinux/libnpe/lib/libhwnpe.so.0.0.1 /home/user/ARMLinux/buildroot/build_arm/staging_dir/usr/lib/libpq.a 
+LIBS = /home/user/ARMLinux/libnpe/lib/libhwnpe.so.0.0.1 /home/user/ARMLinux/buildroot/build_arm/staging_dir/usr/lib/libpq.a  /home/user/ARMLinux/buildroot/build_arm/staging_dir/usr/lib/libpq.so.5.2
 INCLUDE = .  /home/user/ARMLinux/libnpe/lib/libhwnpe
 
 CC = $(CROSS)gcc
@@ -34,8 +34,20 @@ $(APP): $(OBJ)
 	@$(CROSS)strip $@
 #	@$(CROSS)readelf -d $@
 	@$(CROSS)size $@
+	@echo Copy to nfs...
+	@cp $@ /export/nfs/
 	@echo Done.
+test: $(APP)_test
 
+$(APP)_test: $(OBJ)
+	@echo Link... $@
+	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
+	@echo Strip... $@
+	@$(CROSS)strip $@
+	@echo Copy to nfs...
+	@cp $@ /export/nfs/
+	@$(CROSS)size $@
+	@echo Done.
 clean:
 	@rm -f *.o *.gdb $(APP)
 

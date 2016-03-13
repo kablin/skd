@@ -28,23 +28,12 @@
 #include <memory.h>
 
 
-/*#define COM1            0
+#define COM1            0
 #define COM2            1
 #define COM3            2
-#define COM4            3*/
+#define COM4            3
 #define BUFFERSIZE 100
 #define RANGE 0xFF
-
-
-extern unsigned int Sleepdelay;
-extern unsigned int DIin;
-extern unsigned int DIout;
-
-extern unsigned int DOin;
-extern unsigned int DOout;
-
-extern unsigned int comin;
-extern unsigned int comout;
 
 
 extern int MaincikleStop;

@@ -35,7 +35,6 @@
 #include <hwdapi.h>
 #include <LocalDB.h>
 #include <comroutines.h>
-#include <simplesqlite3.h>
 
 //#include "RStest.h"
 
@@ -71,7 +70,7 @@ void TimerCloseInTread()
 	}
 	struct timeval begin;
 	gettimeofday(&begin,NULL);
-	int rezsl=usleep(Sleepdelay);
+	int rezsl=usleep(2000000);
 	if (rezsl!=0)
 	{
 		Log("Stop Timer killed");
@@ -79,12 +78,11 @@ void TimerCloseInTread()
 	}
 	WaitForTurn = 0;
 	if (TripodIsOpenin==1) {
-		set_do_buf(DOin,0); Log("Close in by timer");
+		set_do_buf(1,0); Log("Close in by timer");
 	}
 	if (TripodIsOpenout==1) {
-		set_do_buf(DOout,0);  Log("Close out by timer");
+		set_do_buf(2,0);  Log("Close out by timer");
 	}
-	
 	TripodIsOpenin = 0;
 	TripodIsOpenout = 0;
 	char x[10];
@@ -96,22 +94,19 @@ void TimerCloseInTread()
 
 void CloseTripod(char In)
 {
-	
 	WaitForTurn = 0;
 	pthread_kill(Closetrip,SIGUSR2);
 	if (In==1)
 	{
 		TripodIsOpenin = 0;
-		set_do_buf(DOin,0);
+		set_do_buf(1,0);
 	}
 	else
 	{
 		TripodIsOpenout = 0;
-		set_do_buf(DOout,0);
+		set_do_buf(2,0);
 	}
-
 }
-
 void OpenTripod(char In)
 {
  	pthread_kill(Closetrip,SIGUSR2);
@@ -119,7 +114,7 @@ void OpenTripod(char In)
     if (In==1)
     {
 	   TripodIsOpenin = 1;
-	   set_do_buf(DOin,1);
+	   set_do_buf(1,1);
 
       	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
        	pthread_detach(Closetrip);
@@ -127,7 +122,7 @@ void OpenTripod(char In)
    else
    {
 	   TripodIsOpenout = 1;
-	   set_do_buf(DOout,1);
+	   set_do_buf(2,1);
 	   pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
 	   pthread_detach(Closetrip);
 
@@ -140,7 +135,7 @@ int CardReaded(char *Card,unsigned char com)
 	time(&x);
     char Enter = 0;
     char* Direction="0";
-    if (com==2) 
+    if (com==1) 
 	{
 		Enter = 1;
 		Direction="1";
@@ -148,25 +143,20 @@ int CardReaded(char *Card,unsigned char com)
 
     char* Access=FindCard(Card);
     // Доступ разрешен
-    if((atoi(Access)==1 || atoi(Access)==3) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
+    if((atoi(Access)==1) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
     {
-    	
-    	
-        pthread_kill(Closetrip,SIGUSR2);
-        OpenTripod(Enter);
-    	WriteEntranceLogDb((char*)Card,Direction,Access);
     	Log("Access OK");
+        pthread_kill(Closetrip,SIGUSR2);
+    	OpenTripod(Enter);
     }
     else if (atoi(Access)==1)
     {
-    	WriteEntranceLogDb((char*)Card,Direction,"5");
     	Log("Turniket is busy");
     	WriteLogDb("Turniket is busy");
 	}
     // Даоступ запрещен
     else if (atoi(Access)==0)
     {
-    	WriteEntranceLogDb((char*)Card,Direction,Access);
     	Log("NO Access");
     	CloseTripod(Enter);
 	}
@@ -177,6 +167,6 @@ int CardReaded(char *Card,unsigned char com)
 		 WriteLogDb("Unknown CARD");
 	  	 CloseTripod(Enter);
 	}
-	
+	WriteEntranceLogDb((char*)Card,Direction,Access);
     return 0;
 }
