@@ -28,13 +28,16 @@
 #include <memory.h>
 
 
-#define COM1            0
+/*#define COM1            0
 #define COM2            1
 #define COM3            2
-#define COM4            3
+#define COM4            3*/
 #define BUFFERSIZE 100
 #define RANGE 0xFF
 
+
+unsigned int COM_1;
+unsigned int COM_2;
 
 extern int MaincikleStop;
 extern unsigned char response[BUFFERSIZE];

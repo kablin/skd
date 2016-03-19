@@ -46,26 +46,42 @@ int main(int argc, char *argv[])
 	Ser1.SerIFlags = 0;
 	OpenDb("");
 
-	set_do_buf(2,0);
-	set_do_buf(1,0);
+FILE *f;
+f=fopen("params.txt","r");
+fscanf(f,"%d",&COM_1);
+fscanf(f,"%d",&COM_2);
+fscanf(f,"%d",&in_output);
+fscanf(f,"%d",&out_output);
+fscanf(f,"%d",&enter_com);
+HOST =(char*)malloc(50*sizeof(char));
+fscanf(f,"%s",HOST);
 
-	if(com_Init(COM1, &Ser1))
+PAGE =(char*)malloc(50*sizeof(char));
+fscanf(f,"%s",PAGE);
+
+
+	set_do_buf(in_output,0);
+	set_do_buf(out_output,0);
+
+	if(com_Init(COM_1, &Ser1))
 	{
-		pthread_create(&COMRthread, NULL,(pthread_startroutine_t)COM_read_thread,(void *) COM1);
+		pthread_create(&COMRthread, NULL,(pthread_startroutine_t)COM_read_thread,(void *) COM_1);
 
 	}
 	else {
-			fprintf(stderr,"Could not create COM%d read thread \n\n", COM1+1);
+			fprintf(stderr,"Could not create COM%d read thread \n\n", COM_1+1);
 		}
-	if(com_Init(COM3, &Ser1))
+	if(com_Init(COM_2, &Ser1))
 	{
-		pthread_create(&COM2Rthread,NULL,(pthread_startroutine_t)COM2_read_thread,(void *) COM3);
+		pthread_create(&COM2Rthread,NULL,(pthread_startroutine_t)COM2_read_thread,(void *) COM_2);
 	}
 	else {
-		fprintf(stderr,"Could not create COM%d read thread \n\n", COM3+1);
+		fprintf(stderr,"Could not create COM%d read thread \n\n", COM_2+1);
 	}
 
 
+
+	//SendHTMLMsg("test");
 	unsigned char * cart="[FFFFFFFF]";
 
 	unsigned int n=0;

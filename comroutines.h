@@ -22,7 +22,6 @@
 
 extern int debug;
 
-
 extern void Log ( char * data);
 //extern void SaveLog (char * data);
 //extern void iSaveLog ( int data, char * sdata);
@@ -54,6 +53,8 @@ extern int test();
 
 int config_errors(int r);
 int CardReaded(char *Card,unsigned char com);
+
+extern void SendHTMLMsg(char *data);
 //extern int com_Init ( unsigned char Port);
 
 //int com_Write( void * bytes, int numbytes);
@@ -64,7 +65,11 @@ int CardReaded(char *Card,unsigned char com);
 //void COM_write_thread();
 
 
-
+extern unsigned int in_output;
+extern unsigned int out_output;
+extern unsigned int enter_com;
+extern  char* HOST;
+extern char* PAGE;
 
 #endif
 
