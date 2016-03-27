@@ -60,6 +60,17 @@ PAGE =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",PAGE);
 
 
+
+fprintf(stderr,"h====");
+
+
+
+
+
+
+
+
+
 	set_do_buf(in_output,0);
 	set_do_buf(out_output,0);
 
@@ -96,8 +107,8 @@ fscanf(f,"%s",PAGE);
 
 	MaincikleStop=1;
 
-	pthread_join(COMRthread, &tretr);
-	pthread_join(COM2Rthread, &tretr2);
+	pthread_kill(COMRthread, &tretr);
+	pthread_kill(COM2Rthread, &tretr2);
 	CloseDb();
 	exit(0);
 }

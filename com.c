@@ -37,10 +37,11 @@ int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
     if( ports[Port]->fd > 0 )
     {
 
-      tcgetattr( ports[Port]->fd, &ports[Port]->oldtio );
+    tcgetattr( ports[Port]->fd, &ports[Port]->oldtio );
       bzero( &ports[Port]->newtio, sizeof(struct termios) );
       ports[Port]->newtio.c_cflag = ConfigStruct->SerCFlags | CLOCAL | CREAD;
       ports[Port]->newtio.c_iflag = ConfigStruct->SerIFlags | IGNPAR;
+     // ports[Port]->newtio.c_iflag =0;
       ports[Port]->newtio.c_oflag = 0;
       ports[Port]->newtio.c_lflag = 0;
       ports[Port]->newtio.c_cc[VTIME] = 5;
@@ -58,30 +59,36 @@ int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
 int com_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
+
+
+	int rc, sfd;
+
+	fd_set fds;
+	sfd = ports[Port]->fd;
+	FD_ZERO(&fds);
+	FD_SET(sfd, &fds);
+
+
 	while(MaincikleStop!=1)
 	{
-		struct timeval timeout;
-    	int rc, sfd;
-		timeout.tv_sec = 0;
-    	timeout.tv_usec = 1000;
-    	fd_set fds;
-    	sfd = ports[Port]->fd;
-    	FD_ZERO(&fds);
-    	FD_SET(sfd, &fds);
-		rc = select(sfd+1, &fds, NULL, NULL, &timeout);
+
+
+
+    //	tcflush(sfd,TCIFLUSH);
+
+
+	//	count=0;
+    	rc = select(sfd+1, &fds, NULL, NULL, NULL);
+
+
+
 		if(rc==0)
 		{
-			if(count!=0)
-			{
-				pthread_mutex_lock(&PortLocker);
-				PrintResult((char*)bytes,Port);
-				pthread_mutex_unlock(&PortLocker);
-				memset(bytes,0,strlen((char*)bytes));
-				count=0;
-			}
+
 		}
 		else
 		{
+
 		 rc = read(sfd, bytes+count, BUFFERSIZE-count);
    	     if(rc==-1)
 		     {
@@ -89,12 +96,17 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 		     }
 		     else if(rc==0)
 		     {
+		    		Log("1%");
 		    	 count=0;
      		 }
 		     else
 		     {
-    			count += rc;
-			 }
+		    	 pthread_mutex_lock(&PortLocker);
+
+		    					 PrintResult(bytes,Port);
+		    					  pthread_mutex_unlock(&PortLocker);
+		    					  memset(bytes,0,strlen(bytes));
+   				 }
 		}
 	}
 	return 0;
@@ -112,20 +124,14 @@ int com2_Read  (unsigned char Port,unsigned char *bytes)
     	sfd = ports[Port]->fd;
     	FD_ZERO(&fds);
     	FD_SET(sfd, &fds);
-		rc = select(sfd+1, &fds, NULL, NULL, &timeout);
+		rc = select(sfd+1, &fds, NULL, NULL,NULL);
 		if(rc==0)
 		{
-			if(count!=0)
-			{
-				 pthread_mutex_lock(&PortLocker);
-				 PrintResult((char*)bytes,Port);
-				 pthread_mutex_unlock(&PortLocker);
-				 memset(bytes,0,strlen((char*)bytes));
-				 count=0;
-			}
+
 		}
 		else
 		{
+			//Log("2?");
 			 rc = read(sfd, bytes+count, BUFFERSIZE-count);
 
     	     if(rc==-1)
@@ -138,7 +144,11 @@ int com2_Read  (unsigned char Port,unsigned char *bytes)
      		 }
 		     else
 		     {
-    			count += rc;
+		    	 pthread_mutex_lock(&PortLocker);
+
+		    					 PrintResult(bytes,Port);
+		    					  pthread_mutex_unlock(&PortLocker);
+		    					  memset(bytes,0,strlen(bytes));
 			 }
 		}
 	}
