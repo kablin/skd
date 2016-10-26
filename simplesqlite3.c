@@ -16,7 +16,7 @@
 #include <stddef.h>
 #include "crc16ccit.h"
 #include "comroutines.h"
-
+#include <net/if.h>
 
 #include <memory.h>
 #include <errno.h>
@@ -34,6 +34,9 @@
 
 
 int MaincikleStop=0;
+int GetIp();
+
+
 int main(int argc, char *argv[])
 {
 	system("clear");
@@ -45,6 +48,7 @@ int main(int argc, char *argv[])
 	Ser1.SerCFlags |= CS8;
 	Ser1.SerIFlags = 0;
 	OpenDb("");
+	self_ip =(char*)malloc(50*sizeof(char));
 
 FILE *f;
 f=fopen("params.txt","r");
@@ -53,11 +57,15 @@ fscanf(f,"%d",&COM_2);
 fscanf(f,"%d",&in_output);
 fscanf(f,"%d",&out_output);
 fscanf(f,"%d",&enter_com);
+fscanf(f,"%d",&use_id_in_log);
 HOST =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",HOST);
 
 PAGE =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",PAGE);
+
+fprintf(stderr,"p====");
+GetIp();
 
 
 	set_do_buf(in_output,0);
@@ -114,5 +122,28 @@ void PrintResult(char *buf,unsigned char com)
 	WriteLogDb(to);
 	CardReaded(to,com);
 	free(to);
+}
+
+
+
+int GetIp()
+{
+
+	 struct ifreq ifr;
+	    memset(&ifr, 0, sizeof(ifr));
+	    strcpy(ifr.ifr_name, "eth0");
+
+	    int s = socket(AF_INET, SOCK_DGRAM, 0);
+	    ioctl(s, SIOCGIFADDR, &ifr);
+	    close(s);
+
+	    struct sockaddr_in *sa = (struct sockaddr_in*)&ifr.ifr_addr;
+
+	    strcpy(self_ip,inet_ntoa(sa->sin_addr));
+
+	    printf("addr = %s\n", self_ip);
+	    return 0;
+
+
 }
 

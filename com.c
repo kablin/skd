@@ -24,7 +24,7 @@ static T_COMPORT      * ports[COM_MAX] = {NULL,NULL,NULL,NULL};
 
 
 static pthread_mutex_t PortLocker  =PTHREAD_MUTEX_INITIALIZER ;
-
+static pthread_mutex_t BeeperLocker  =PTHREAD_MUTEX_INITIALIZER ;
 
 int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
 {
@@ -58,8 +58,16 @@ int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
 int com_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
+	int beeper=0;
 	while(MaincikleStop!=1)
 	{
+		beeper++;
+		if (beeper>500)
+		{
+			pthread_mutex_lock(&BeeperLocker);
+			SendHTMLMsg("com_1_ok");
+			pthread_mutex_unlock(&BeeperLocker);
+		}
 		struct timeval timeout;
     	int rc, sfd;
 		timeout.tv_sec = 0;
@@ -102,8 +110,16 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 int com2_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
+	int beeper=0;
 	while(MaincikleStop!=1)
 	{
+		beeper++;
+		if (beeper>500)
+		{
+			pthread_mutex_lock(&BeeperLocker);
+			SendHTMLMsg("com_2_ok");
+			pthread_mutex_unlock(&BeeperLocker);
+		}
 		struct timeval timeout;
     	int rc, sfd;
 		timeout.tv_sec = 0;

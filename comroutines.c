@@ -38,7 +38,7 @@
 #include <netdb.h>
 
 
-#define PORT 80
+#define PORT_Socket 80
 #define USERAGENT "HTMLGET 1.0"
 
 
@@ -53,8 +53,10 @@ int cikle=0;
  unsigned int in_output;
  unsigned int out_output;
  unsigned int enter_com;
-  char* HOST;
+ char* HOST;
  char* PAGE;
+ char* self_ip;
+ unsigned int use_id_in_log;
 
 
 
@@ -62,8 +64,7 @@ int cikle=0;
 
 
 
-
-
+ void SendHTMLMsg(char* data);
 
 
 
@@ -72,7 +73,7 @@ int create_tcp_socket()
   int sock;
   if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
     perror("Can't create TCP socket");
-    exit(1);
+    return 0;
   }
   return sock;
 }
@@ -87,12 +88,12 @@ char* get_ip(char *host)
   if((hent = gethostbyname(host)) == NULL)
   {
     herror("Can't get IP");
-    exit(1);
+    return"";
   }
   if(inet_ntop(AF_INET, (void *)hent->h_addr_list[0], ip, iplen) == NULL)
   {
     perror("Can't resolve host");
-    exit(1);
+    return"";
   }
   return ip;
 }
@@ -271,17 +272,17 @@ void SendHTMLMsg(char* data)
 	  if( tmpres < 0)
 	  {
 	    perror("Can't set remote->sin_addr.s_addr");
-	    exit(1);
+	    return;
 	  }else if(tmpres == 0)
 	  {
 	    fprintf(stderr, "%s is not a valid IP address\n", ip);
-	    exit(1);
+	    return;
 	  }
-	  remote->sin_port = htons(PORT);
+	  remote->sin_port = htons(PORT_Socket);
 
 	  if(connect(sock, (struct sockaddr *)remote, sizeof(struct sockaddr)) < 0){
 	    perror("Could not connect");
-	    exit(1);
+	    return;
 	  }
 	  get = build_get_query(HOST, page);
 	//  fprintf(stderr, "Query is:\n<<START>>\n%s<<END>>\n", get);
@@ -293,7 +294,7 @@ void SendHTMLMsg(char* data)
 	    tmpres = send(sock, get+sent, strlen(get)-sent, 0);
 	    if(tmpres == -1){
 	      perror("Can't send query");
-	      exit(1);
+	      return;
 	    }
 	    sent += tmpres;
 	  }
