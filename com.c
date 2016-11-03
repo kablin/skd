@@ -67,6 +67,7 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 			pthread_mutex_lock(&BeeperLocker);
 			SendHTMLMsg("com_1_ok");
 			pthread_mutex_unlock(&BeeperLocker);
+			beeper=0;
 		}
 		struct timeval timeout;
     	int rc, sfd;
@@ -119,6 +120,7 @@ int com2_Read  (unsigned char Port,unsigned char *bytes)
 			pthread_mutex_lock(&BeeperLocker);
 			SendHTMLMsg("com_2_ok");
 			pthread_mutex_unlock(&BeeperLocker);
+			beeper=0;
 		}
 		struct timeval timeout;
     	int rc, sfd;
