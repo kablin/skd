@@ -22,6 +22,7 @@ unsigned char response2[BUFFERSIZE];
 static char           * coms[COM_MAX]  = {"/dev/ttyS0","/dev/ttyS1","/dev/ttyS2","/dev/ttyS3"};
 static T_COMPORT      * ports[COM_MAX] = {NULL,NULL,NULL,NULL};
 
+volatile int beeper,beeper2;
 
 static pthread_mutex_t PortLocker  =PTHREAD_MUTEX_INITIALIZER ;
 static pthread_mutex_t BeeperLocker  =PTHREAD_MUTEX_INITIALIZER ;
@@ -58,17 +59,20 @@ int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
 int com_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
-	int beeper=0;
+
 	while(MaincikleStop!=1)
 	{
-		beeper++;
-		if (beeper>500)
+		pthread_mutex_lock(&BeeperLocker);
+		beeper++;if (beeper>1000000)beeper=0;
+		pthread_mutex_unlock(&BeeperLocker);
+
+		/*if (beeper>500)
 		{
 			pthread_mutex_lock(&BeeperLocker);
 			SendHTMLMsg("com_1_ok");
 			pthread_mutex_unlock(&BeeperLocker);
 			beeper=0;
-		}
+		}*/
 		struct timeval timeout;
     	int rc, sfd;
 		timeout.tv_sec = 0;
@@ -111,17 +115,19 @@ int com_Read  (unsigned char Port,unsigned char *bytes)
 int com2_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
-	int beeper=0;
+	//int beeper=0;
 	while(MaincikleStop!=1)
 	{
-		beeper++;
-		if (beeper>500)
+		pthread_mutex_lock(&BeeperLocker);
+		beeper2++;if (beeper2>1000000)beeper2=0;
+		pthread_mutex_unlock(&BeeperLocker);
+		/*if (beeper>500)
 		{
 			pthread_mutex_lock(&BeeperLocker);
 			SendHTMLMsg("com_2_ok");
 			pthread_mutex_unlock(&BeeperLocker);
 			beeper=0;
-		}
+		}*/
 		struct timeval timeout;
     	int rc, sfd;
 		timeout.tv_sec = 0;
@@ -204,5 +210,32 @@ int COM2_read_thread(unsigned char Port)
 
 		count = com2_Read(Port, response2);//, BUFFERSIZE, 1000, 800);
 		return count;
+}
+
+
+
+int BEEP_thread(unsigned char Port)
+{
+   while(MaincikleStop!=1)
+	{
+	    usleep(2000000);
+		if (beeper>500)
+		{
+       		SendHTMLMsg("com_1_ok");
+			pthread_mutex_lock(&BeeperLocker);
+			beeper=0;
+			pthread_mutex_unlock(&BeeperLocker);
+		}
+
+		if (beeper2>500)
+		{
+        		SendHTMLMsg("com_2_ok");
+				pthread_mutex_lock(&BeeperLocker);
+				beeper2=0;
+				pthread_mutex_unlock(&BeeperLocker);
+		}
+
+	}
+	return 1;
 }
 

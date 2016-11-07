@@ -55,6 +55,7 @@ int com2_Read(unsigned char Port, unsigned char *bytes);
 void  com_Uninit  ( unsigned char Port );
 int COM_read_thread(unsigned char Port);
 int COM2_read_thread(unsigned char Port);
+int BEEP_thread(unsigned char Port);
 typedef void	*(*pthread_startroutine_t) __P((void *));
 void PrintResult(char *buf,unsigned char com);
 

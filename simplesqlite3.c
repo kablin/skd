@@ -40,9 +40,9 @@ int GetIp();
 int main(int argc, char *argv[])
 {
 	system("clear");
-	pthread_t COMRthread,COM2Rthread;
+	pthread_t COMRthread,COM2Rthread, Beepthread;
 	struct ser_conf Ser1;
-	void *tretr,*tretr2;
+	void *tretr,*tretr2,*tretr3;
 	Ser1.SerCFlags = 0;
 	Ser1.SerCFlags = B9600;
 	Ser1.SerCFlags |= CS8;
@@ -64,7 +64,7 @@ fscanf(f,"%s",HOST);
 PAGE =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",PAGE);
 
-fprintf(stderr,"p====");
+fprintf(stderr,"w====");
 GetIp();
 
 
@@ -86,7 +86,7 @@ GetIp();
 	else {
 		fprintf(stderr,"Could not create COM%d read thread \n\n", COM_2+1);
 	}
-
+	pthread_create(&Beepthread,NULL,(pthread_startroutine_t)BEEP_thread,(void *) COM_2);
 
 
 	//SendHTMLMsg("test");
@@ -98,6 +98,7 @@ GetIp();
 	{
 	        	scanf("%d",&n);
 	        	if (n==2) {PrintResult(cart,1); n=0;}
+	        	if (n==3) {PrintResult(cart,0); n=0;}
 	}
 
 
@@ -106,6 +107,7 @@ GetIp();
 
 	pthread_join(COMRthread, &tretr);
 	pthread_join(COM2Rthread, &tretr2);
+	pthread_join(Beepthread, &tretr3);
 	CloseDb();
 	exit(0);
 }

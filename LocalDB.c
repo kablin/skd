@@ -30,19 +30,30 @@ void WriteEntranceLogDb(char * card,char* direction,char* result)
 	PGresult *res;
 	char* req1="Insert into accreditation_data.tbl_skd_log (card_number,access_granted,id_reader) VALUES ('";
 	char* req2="',";
-	char* req3="::bit,";
-	char* req4=");";
+	//char* req3="::bit,'";
+	char* req3=",'";
+	char* req4="');";
  	// printf("%d %s",direction,result);
  	// return;
-    char* rez=malloc((strlen(req1)+strlen(req2)+strlen(req3)+strlen(req4)+strlen(card)+strlen(result)+strlen(direction))*sizeof(char));
+    char* rez=malloc((strlen(req1)+strlen(req2)+strlen(req3)+strlen(req4)+strlen(card)+strlen(result)+strlen(self_ip)+strlen(direction))*sizeof(char));
 	strcpy(rez,req1);
 	strcat(rez,card);
 	strcat(rez,req2);
 	strcat(rez,result);
 	strcat(rez,req3);
-	strcat(rez,direction);
+	if (use_id_in_log==0)
+		strcat(rez,self_ip);
+	else
+	{
+		char * s=malloc(10*sizeof(char));
+		sprintf(s,"%d  ",use_id_in_log);
+		strcat(rez,s);
+		free(s);
+	}
+	//strcat(rez,direction);
 	strcat(rez,req4);
 	//puts(rez);
+	//Log (rez);
 	res = PQexec(conn, rez);
 	free(rez);
 	PQclear(res);

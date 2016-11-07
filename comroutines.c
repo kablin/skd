@@ -184,12 +184,12 @@ void OpenTripod(char In)
     {
 	   TripodIsOpenin = 1;
 	   set_do_buf(in_output,1);
-
       	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
        	pthread_detach(Closetrip);
    }
    else
    {
+
 	   TripodIsOpenout = 1;
 	   set_do_buf(out_output,1);
 	   pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
@@ -253,7 +253,7 @@ void SendHTMLMsg(char* data)
 	//  char* host;
 
       char* param="?error=";
-
+Log(data);
 
 	//  page = "test.php?error=555555";
 
