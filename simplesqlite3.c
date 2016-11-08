@@ -57,7 +57,7 @@ fscanf(f,"%d",&COM_2);
 fscanf(f,"%d",&in_output);
 fscanf(f,"%d",&out_output);
 fscanf(f,"%d",&enter_com);
-fscanf(f,"%d",&use_id_in_log);
+//fscanf(f,"%d",&use_id_in_log);
 HOST =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",HOST);
 
@@ -65,7 +65,7 @@ PAGE =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",PAGE);
 
 fprintf(stderr,"w====");
-GetIp();
+//GetIp();
 
 
 	set_do_buf(in_output,0);

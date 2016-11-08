@@ -28,20 +28,21 @@ void WriteLogDb(char * data)
 void WriteEntranceLogDb(char * card,char* direction,char* result)
 {
 	PGresult *res;
-	char* req1="Insert into accreditation_data.tbl_skd_log (card_number,access_granted,id_reader) VALUES ('";
+	char* req1="Insert into accreditation_data.tbl_skd_log (card_number,access_granted,direction) VALUES ('";
 	char* req2="',";
 	//char* req3="::bit,'";
 	char* req3=",'";
 	char* req4="');";
  	// printf("%d %s",direction,result);
  	// return;
-    char* rez=malloc((strlen(req1)+strlen(req2)+strlen(req3)+strlen(req4)+strlen(card)+strlen(result)+strlen(self_ip)+strlen(direction))*sizeof(char));
+    char* rez=malloc((strlen(req1)+strlen(req2)+strlen(req3)+strlen(req4)+strlen(card)+strlen(result)+strlen(direction))*sizeof(char));
 	strcpy(rez,req1);
 	strcat(rez,card);
 	strcat(rez,req2);
 	strcat(rez,result);
 	strcat(rez,req3);
-	if (use_id_in_log==0)
+	strcat(rez,direction);
+	/*if (use_id_in_log==0)
 		strcat(rez,self_ip);
 	else
 	{
@@ -49,7 +50,7 @@ void WriteEntranceLogDb(char * card,char* direction,char* result)
 		sprintf(s,"%d  ",use_id_in_log);
 		strcat(rez,s);
 		free(s);
-	}
+	}*/
 	//strcat(rez,direction);
 	strcat(rez,req4);
 	//puts(rez);
@@ -74,9 +75,17 @@ char * FindCard(char * Card)
 	char * rez=( char *)malloc(660*sizeof(char));
 	strcpy(rez,"SELECT CASE WHEN NOT EXISTS(SELECT C.ID FROM accreditation_data.tbl_cards C WHERE C.CARD_NUMBER = '");
 	strcat(rez,Card);
+	strcat(rez,"') THEN 0 ELSE (SELECT COALESCE(MIN(A.access_granted::integer), 0) as access FROM accreditation_data.tbl_cards C LEFT JOIN accreditation_data.tbl_link_access_group_to_skd_interval A ON A.ID_ACCESS_GROUP =C.ID_ACCESS_GROUP AND A.ID_INTERVAL IN (select B.ID FROM accreditation_data.tbl_skd_interval_list B WHERE ((b.date_from + b.time_from)::timestamp without time zone, (b.date_to + b.time_to)::timestamp without time zone) OVERLAPS (current_timestamp, INTERVAL '2 second') = true) WHERE C.CARD_NUMBER = '");
+	strcat(rez,Card);
+	strcat(rez,"') end as access;");
+
+
+
+	/*strcpy(rez,"SELECT CASE WHEN NOT EXISTS(SELECT C.ID FROM accreditation_data.tbl_cards C WHERE C.CARD_NUMBER = '");
+	strcat(rez,Card);
 	strcat(rez,"') THEN NULL ELSE (SELECT COALESCE(MIN(A.access_granted::integer)::bit, 0::BIT) as access FROM accreditation_data.tbl_cards C LEFT JOIN accreditation_data.tbl_link_access_group_to_skd_interval A ON A.ID_ACCESS_GROUP =C.ID_ACCESS_GROUP AND A.ID_INTERVAL IN (select B.ID FROM accreditation_data.tbl_skd_interval_list B WHERE ((b.date_from + b.time_from)::timestamp without time zone, (b.date_to + b.time_to)::timestamp without time zone) OVERLAPS (current_timestamp, INTERVAL '2 second') = true) WHERE C.CARD_NUMBER = '");
 	strcat(rez,Card);
-	strcat(rez,"') end  as access;");
+	strcat(rez,"') end  as access;");*/
 	//puts(rez);
 	char* Access="-1";
 	res = PQexec(conn, rez);
@@ -105,10 +114,12 @@ char * FindCard(char * Card)
 		}
 		else
 		{
-			if(atoi(PQgetvalue(res,0,Fiednum))>0){
-				Access="1";
+			if(atoi(PQgetvalue(res,0,Fiednum))==2){
+				Access="2";
 			}
-			else
+			else if(atoi(PQgetvalue(res,0,Fiednum))==3){
+				Access="3";
+			}
 			{
 				Access="0";
 			}

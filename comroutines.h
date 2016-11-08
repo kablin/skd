@@ -71,7 +71,7 @@ extern unsigned int enter_com;
 extern  char* HOST;
 extern char* PAGE;
 extern char* self_ip;
-extern unsigned int use_id_in_log;
+//extern unsigned int use_id_in_log;
 #endif
 
 

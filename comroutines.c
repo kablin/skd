@@ -56,7 +56,7 @@ int cikle=0;
  char* HOST;
  char* PAGE;
  char* self_ip;
- unsigned int use_id_in_log;
+ //unsigned int use_id_in_log;
 
 
 
@@ -203,28 +203,28 @@ int CardReaded(char *Card,unsigned char com)
 	time_t x=0;
 	time(&x);
     char Enter = 0;
-    char* Direction="0";
+    char* Direction="out";
     if (com==enter_com)
 	{
 		Enter = 1;
-		Direction="1";
+		Direction="in";
 	}
 
     char* Access=FindCard(Card);
     // Доступ разрешен
-    if((atoi(Access)==1) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
+    if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
     {
     	Log("Access OK");
         pthread_kill(Closetrip,SIGUSR2);
     	OpenTripod(Enter);
     }
-    else if (atoi(Access)==1)
+    else if (atoi(Access)==2)
     {
     	Log("Turniket is busy");
     	WriteLogDb("Turniket is busy");
 	}
     // Даоступ запрещен
-    else if (atoi(Access)==0)
+    else if (atoi(Access)==3)
     {
     	Log("NO Access");
     	CloseTripod(Enter);
