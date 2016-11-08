@@ -95,6 +95,10 @@ char* get_ip(char *host)
     perror("Can't resolve host");
     return"";
   }
+
+
+//  Log(ip);
+
   return ip;
 }
 
@@ -102,7 +106,7 @@ char *build_get_query(char *host, char *page)
 {
   char *query;
   char *getpage = page;
-  char *tpl = "GET /%s HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s\r\n\r\n";
+  char *tpl = "GET /%s HTTP/1.0\r\nHost: %s\r\nUser-Agent: %s\r\nAuthorization:Basic YXJjaXRpY19hcGk6MjAxNSFhcmN0aWM=\r\n\r\n";
   if(getpage[0] == '/'){
     getpage = getpage + 1;
     fprintf(stderr,"Removing leading \"/\", converting %s to %s\n", page, getpage);
@@ -209,7 +213,10 @@ int CardReaded(char *Card,unsigned char com)
 		Enter = 1;
 		Direction="in";
 	}
-
+	/*char * s=malloc(100*sizeof(char));
+Log(Direction);
+sprintf(s,"%d  ",com);
+Log(s);*/
     char* Access=FindCard(Card);
     // Доступ разрешен
     if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
@@ -253,7 +260,7 @@ void SendHTMLMsg(char* data)
 	//  char* host;
 
       char* param="?error=";
-Log(data);
+//Log(data);
 
 	//  page = "test.php?error=555555";
 

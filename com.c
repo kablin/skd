@@ -59,7 +59,6 @@ int com_Init ( unsigned char Port, struct ser_conf *ConfigStruct)
 int com_Read  (unsigned char Port,unsigned char *bytes)
 {
 	int count=0;
-
 	while(MaincikleStop!=1)
 	{
 		pthread_mutex_lock(&BeeperLocker);
@@ -136,12 +135,12 @@ int com2_Read  (unsigned char Port,unsigned char *bytes)
     	sfd = ports[Port]->fd;
     	FD_ZERO(&fds);
     	FD_SET(sfd, &fds);
+
 		rc = select(sfd+1, &fds, NULL, NULL, &timeout);
 		if(rc==0)
 		{
 			if(count!=0)
-			{
-				 pthread_mutex_lock(&PortLocker);
+			{	 pthread_mutex_lock(&PortLocker);
 				 PrintResult((char*)bytes,Port);
 				 pthread_mutex_unlock(&PortLocker);
 				 memset(bytes,0,strlen((char*)bytes));
@@ -191,6 +190,7 @@ int COM_read_thread(unsigned char Port)
 		if(pthread_sigmask(SIG_BLOCK, &sigs, NULL) != 0) {
 				fprintf(stderr, "pthread_sigmask() failed\n");
 		}
+
 
 		count = com_Read(Port, response);//, BUFFERSIZE, 1000, 800);
 		return count;

@@ -64,7 +64,7 @@ fscanf(f,"%s",HOST);
 PAGE =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",PAGE);
 
-fprintf(stderr,"w====");
+fprintf(stderr,"a====");
 //GetIp();
 
 
@@ -97,7 +97,7 @@ fprintf(stderr,"w====");
 	while (n!=1)
 	{
 	        	scanf("%d",&n);
-	        	if (n==2) {PrintResult(cart,1); n=0;}
+	        	if (n==2) {PrintResult(cart,2); n=0;}
 	        	if (n==3) {PrintResult(cart,0); n=0;}
 	}
 
