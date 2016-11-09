@@ -89,6 +89,7 @@ char * FindCard(char * Card)
 	//puts(rez);
 	char* Access="-1";
 	res = PQexec(conn, rez);
+	//Log (rez);
 	if (PQresultStatus(res) != PGRES_TUPLES_OK ) {
         Log("Query error");
 	}
@@ -114,7 +115,12 @@ char * FindCard(char * Card)
 		}
 		else
 		{
-			if(atoi(PQgetvalue(res,0,Fiednum))==2){
+			Access=PQgetvalue(res,0,Fiednum);
+			/*char * s=malloc(100*sizeof(char));
+				sprintf(s,"%d  ",atoi(PQgetvalue(res,0,Fiednum));
+
+			Log (s);*/
+			/*if(atoi(PQgetvalue(res,0,Fiednum))==2){
 				Access="2";
 			}
 			else if(atoi(PQgetvalue(res,0,Fiednum))==3){
@@ -122,10 +128,11 @@ char * FindCard(char * Card)
 			}
 			{
 				Access="0";
-			}
+			}*/
 		}
 		
 	}
+
 	free(rez);
 	PQclear(res);
 	return Access;

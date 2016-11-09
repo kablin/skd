@@ -40,6 +40,14 @@ int GetIp();
 int main(int argc, char *argv[])
 {
 	system("clear");
+	/*if (mkfifo("/tmp/pipeskd",0777))
+	{
+
+	perror("Already run");
+	return 1;
+	}*/
+
+
 	pthread_t COMRthread,COM2Rthread, Beepthread;
 	struct ser_conf Ser1;
 	void *tretr,*tretr2,*tretr3;
@@ -58,13 +66,15 @@ fscanf(f,"%d",&in_output);
 fscanf(f,"%d",&out_output);
 fscanf(f,"%d",&enter_com);
 //fscanf(f,"%d",&use_id_in_log);
+fscanf(f,"%d",&OpenTimeOut);
+
 HOST =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",HOST);
 
 PAGE =(char*)malloc(50*sizeof(char));
 fscanf(f,"%s",PAGE);
 
-fprintf(stderr,"a====");
+fprintf(stderr,"h====");
 //GetIp();
 
 
@@ -90,7 +100,7 @@ fprintf(stderr,"a====");
 
 
 	//SendHTMLMsg("test");
-	unsigned char * cart="[FFFFFFFF]";
+	unsigned char * cart="4B64552F";
 
 	unsigned int n=0;
 
@@ -109,6 +119,7 @@ fprintf(stderr,"a====");
 	pthread_join(COM2Rthread, &tretr2);
 	pthread_join(Beepthread, &tretr3);
 	CloseDb();
+
 	exit(0);
 }
 

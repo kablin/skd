@@ -57,6 +57,7 @@ int cikle=0;
  char* PAGE;
  char* self_ip;
  //unsigned int use_id_in_log;
+  unsigned int OpenTimeOut;
 
 
 
@@ -143,7 +144,7 @@ void TimerCloseInTread()
 	}
 	struct timeval begin;
 	gettimeofday(&begin,NULL);
-	int rezsl=usleep(2000000);
+	int rezsl=usleep(OpenTimeOut);
 	if (rezsl!=0)
 	{
 		Log("Stop Timer killed");
