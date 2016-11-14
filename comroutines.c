@@ -151,22 +151,22 @@ void TimerCloseInTread()
 		return;
 	}
 	WaitForTurn = 0;
-	if (TripodIsOpenin==1) {
+	/*if (TripodIsOpenin==1) {
 		set_do_buf(in_output,0); Log("Close in by timer");
 	}
 	if (TripodIsOpenout==1) {
 		set_do_buf(out_output,0);  Log("Close out by timer");
-	}
+	}*/
 	TripodIsOpenin = 0;
 	TripodIsOpenout = 0;
-	char x[10];
+	/*char x[10];
 	cikle++;
 	sprintf(x,"%d",cikle);
-	puts (x);
+	puts (x);*/
 	return;
 }
 
-void CloseTripod(char In)
+/*void CloseTripod(char In)
 {
 	WaitForTurn = 0;
 	pthread_kill(Closetrip,SIGUSR2);
@@ -180,14 +180,16 @@ void CloseTripod(char In)
 		TripodIsOpenout = 0;
 		set_do_buf(out_output,0);
 	}
-}
+}*/
+
 void OpenTripod(char In)
 {
  	pthread_kill(Closetrip,SIGUSR2);
     WaitForTurn = 1;
+    TripodIsOpenin = 1;
     if (In==1)
     {
-	   TripodIsOpenin = 1;
+	  // TripodIsOpenin = 1;
 	   set_do_buf(in_output,1);
       	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
        	pthread_detach(Closetrip);
@@ -195,7 +197,7 @@ void OpenTripod(char In)
    else
    {
 
-	   TripodIsOpenout = 1;
+	  // TripodIsOpenout = 1;
 	   set_do_buf(out_output,1);
 	   pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
 	   pthread_detach(Closetrip);
@@ -220,31 +222,33 @@ sprintf(s,"%d  ",com);
 Log(s);*/
     char* Access=FindCard(Card);
     // Доступ разрешен
-    if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
+  //  if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
+    if((atoi(Access)==2) && (TripodIsOpenin ==0) )
     {
     	Log("Access OK");
-        pthread_kill(Closetrip,SIGUSR2);
+       // pthread_kill(Closetrip,SIGUSR2);
     	OpenTripod(Enter);
+    	WriteEntranceLogDb((char*)Card,Direction,Access);
     }
-    else if (atoi(Access)==2)
+   /* else if (atoi(Access)==2)
     {
     	Log("Turniket is busy");
     	WriteLogDb("Turniket is busy");
-	}
+	}*/
     // Даоступ запрещен
-    else if (atoi(Access)==3)
+   /* else if (atoi(Access)==3)
     {
     	Log("NO Access");
     	CloseTripod(Enter);
-	}
+	}*/
 	// Неизвестная карта
-	else
+/*	else
 	{
 		 Log("Unknown CARD");
 		 WriteLogDb("Unknown CARD");
 	  	 CloseTripod(Enter);
-	}
-	WriteEntranceLogDb((char*)Card,Direction,Access);
+	}*/
+	//WriteEntranceLogDb((char*)Card,Direction,Access);
     return 0;
 }
 
