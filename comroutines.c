@@ -223,13 +223,18 @@ Log(s);*/
     char* Access=FindCard(Card);
     // Доступ разрешен
   //  if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
-    if((atoi(Access)==2) && (TripodIsOpenin ==0) )
+   if (TripodIsOpenin ==0)
+   {
+
+    if(atoi(Access)==2   )
     {
     	Log("Access OK");
        // pthread_kill(Closetrip,SIGUSR2);
     	OpenTripod(Enter);
     	WriteEntranceLogDb((char*)Card,Direction,Access);
     }
+    WriteEntranceLogDb((char*)Card,Direction,Access);
+   }
    /* else if (atoi(Access)==2)
     {
     	Log("Turniket is busy");
