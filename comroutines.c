@@ -178,6 +178,8 @@ void TimerCloseInTread()
 	if (TripodIsOpenout==1) {
 		set_do_buf(out_output,0);  Log("Close out by timer");
 	}*/
+	set_do_buf(in_output,0);
+	set_do_buf(out_output,0);
 	TripodIsOpenin = 0;
 	TripodIsOpenout = 0;
 	/*char x[10];
@@ -211,6 +213,7 @@ void OpenTripod(char In)
     if (In==1)
     {
 	  // TripodIsOpenin = 1;
+    	Log("OPEN IN");
 	   set_do_buf(in_output,1);
       	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
        	pthread_detach(Closetrip);
@@ -219,6 +222,7 @@ void OpenTripod(char In)
    {
 
 	  // TripodIsOpenout = 1;
+	   Log("OPEN OUT");
 	   set_do_buf(out_output,1);
 	   pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
 	   pthread_detach(Closetrip);
