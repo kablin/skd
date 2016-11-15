@@ -207,6 +207,7 @@ void OpenTripod(char In)
 }
 int CardReaded(char *Card,unsigned char com)
 {
+
 	time_t x=0;
 	time(&x);
     char Enter = 0;
@@ -220,7 +221,9 @@ int CardReaded(char *Card,unsigned char com)
 Log(Direction);
 sprintf(s,"%d  ",com);
 Log(s);*/
+    Log("start find cart");
     char* Access=FindCard(Card);
+    Log("card finded");
     // Доступ разрешен
   //  if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
    if (TripodIsOpenin ==0)
@@ -231,9 +234,11 @@ Log(s);*/
     	Log("Access OK");
        // pthread_kill(Closetrip,SIGUSR2);
     	OpenTripod(Enter);
-    	WriteEntranceLogDb((char*)Card,Direction,Access);
+    	//WriteEntranceLogDb((char*)Card,Direction,Access);
     }
+    Log("start write log");
     WriteEntranceLogDb((char*)Card,Direction,Access);
+    Log("end write log");
    }
    /* else if (atoi(Access)==2)
     {

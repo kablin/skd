@@ -55,7 +55,9 @@ int main(int argc, char *argv[])
 	Ser1.SerCFlags = B9600;
 	Ser1.SerCFlags |= CS8;
 	Ser1.SerIFlags = 0;
+	Log("start open db");
 	OpenDb("");
+	Log("db opened");
 	self_ip =(char*)malloc(50*sizeof(char));
 
 FILE *f;
@@ -80,18 +82,22 @@ fprintf(stderr,"h====");
 
 	set_do_buf(in_output,0);
 	set_do_buf(out_output,0);
-
+	Log("start com1 init");
 	if(com_Init(COM_1, &Ser1))
 	{
+		Log("start com1 ok. Start com thread1");
 		pthread_create(&COMRthread, NULL,(pthread_startroutine_t)COM_read_thread,(void *) COM_1);
-
+		Log("com thread1 started");
 	}
 	else {
 			fprintf(stderr,"Could not create COM%d read thread \n\n", COM_1+1);
 		}
+	Log("start com2 init");
 	if(com_Init(COM_2, &Ser1))
 	{
+		Log("start com2 ok. Start com thread2");
 		pthread_create(&COM2Rthread,NULL,(pthread_startroutine_t)COM2_read_thread,(void *) COM_2);
+		Log("com thread2 started");
 	}
 	else {
 		fprintf(stderr,"Could not create COM%d read thread \n\n", COM_2+1);
@@ -125,6 +131,7 @@ fprintf(stderr,"h====");
 
 void PrintResult(char *buf,unsigned char com)
 {
+	Log("read card");
 	char *to =  calloc(9,sizeof(char));
 	strncpy(to, buf+6, 2);
 	strncpy(to+2, buf+4, 2);
@@ -132,7 +139,7 @@ void PrintResult(char *buf,unsigned char com)
 	strncpy(to+5, buf+2, 2);
 	strncpy(to+7, buf, 2);
 	printf("Port:%d Card:%s\n",com, to);
-	WriteLogDb(to);
+	//WriteLogDb(to);
 	CardReaded(to,com);
 	free(to);
 }
