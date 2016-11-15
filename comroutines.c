@@ -207,7 +207,7 @@ void TimerCloseInTread()
 
 void OpenTripod(char In)
 {
- 	pthread_kill(Closetrip,SIGUSR2);
+ 	//pthread_kill(Closetrip,SIGUSR2);
     WaitForTurn = 1;
     TripodIsOpenin = 1;
     if (In==1)
@@ -215,7 +215,7 @@ void OpenTripod(char In)
 	  // TripodIsOpenin = 1;
     	Log("OPEN IN");
 	   set_do_buf(in_output,1);
-      	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
+      //	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
        	pthread_detach(Closetrip);
    }
    else
@@ -224,10 +224,11 @@ void OpenTripod(char In)
 	  // TripodIsOpenout = 1;
 	   Log("OPEN OUT");
 	   set_do_buf(out_output,1);
-	   pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
+	  // pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
 	   pthread_detach(Closetrip);
 
    };
+    pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
    return;
 }
 int CardReaded(char *Card,unsigned char com)
