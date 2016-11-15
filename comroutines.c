@@ -180,6 +180,8 @@ void TimerCloseInTread()
 	}*/
 	set_do_buf(in_output,0);
 	set_do_buf(out_output,0);
+
+	Log("Zakrili po timeru TripodIsOpenin=0");
 	TripodIsOpenin = 0;
 	TripodIsOpenout = 0;
 	/*char x[10];
@@ -209,6 +211,7 @@ void OpenTripod(char In)
 {
  	//pthread_kill(Closetrip,SIGUSR2);
     WaitForTurn = 1;
+    Log("Otkrivaem TripodIsOpenin=1");
     TripodIsOpenin = 1;
     if (In==1)
     {
@@ -216,7 +219,7 @@ void OpenTripod(char In)
     	Log("OPEN IN");
 	   set_do_buf(in_output,1);
       //	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
-       	pthread_detach(Closetrip);
+      // 	pthread_detach(Closetrip);
    }
    else
    {
@@ -225,10 +228,11 @@ void OpenTripod(char In)
 	   Log("OPEN OUT");
 	   set_do_buf(out_output,1);
 	  // pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
-	   pthread_detach(Closetrip);
+	  //pthread_detach(Closetrip);
 
    };
     pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
+    pthread_detach(Closetrip);
    return;
 }
 int CardReaded(char *Card,unsigned char com)
@@ -251,6 +255,10 @@ Log(s);*/
     char* Access=FindCard(Card);
     Log("card finded");
     // Доступ разрешен
+    if (TripodIsOpenin ==0)  Log("TripodIsOpenin== 0 BUDEM OTKRIVAT")  ;
+    else Log("TripodIsOpenin== 1 UZE OTKRITO")  ;
+
+
   //  if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
    if (TripodIsOpenin ==0)
    {
