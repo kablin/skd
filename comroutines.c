@@ -122,7 +122,28 @@ char *build_get_query(char *host, char *page)
 void Log (char * data)
 {
 	pthread_mutex_lock(&LogLocker);
-	puts(data);
+
+	time_t x=0;
+		time(&x);
+		struct tm * timeinfo=localtime(&x);
+
+
+		char * s=malloc(100*sizeof(char));
+		sprintf(s,"%d h %d m %d s: ",timeinfo->tm_hour,timeinfo->tm_min, timeinfo->tm_sec);
+		s=realloc(s,(strlen(s)+strlen(data)+1)*sizeof(char));
+		strcat(s,data);
+		char * newline="\r\n";
+		s=realloc(s,(strlen(s)+strlen(newline)+1)*sizeof(char));
+		strcat(s,newline);
+
+
+
+		puts(s);
+
+		free(s);
+
+
+
 	pthread_mutex_unlock(&LogLocker);
 }
 void NullHandler()
