@@ -64,9 +64,9 @@ char * FindCard(char * Card)
 {
 	if(strlen(Card)!=9)
 	{
-		Log("Wrong input");
-		Log("Card");
-		WriteLogDb("Wrong query result");
+		//Log("Wrong input");
+		//Log("Card");
+		//WriteLogDb("Wrong query result");
 		return "-1";
 	}
 	struct timeval begin;
@@ -91,27 +91,27 @@ char * FindCard(char * Card)
 	res = PQexec(conn, rez);
 	//Log (rez);
 	if (PQresultStatus(res) != PGRES_TUPLES_OK ) {
-        Log("Query error");
+        //Log("Query error");
 	}
 	int rec_count = PQntuples(res);
 	if ( rec_count==0)
 	{
-	  Log("No card");
+	 // Log("No card");
 	}
 	else if (rec_count>1)
 	{
-		Log("Wrong query result");
-		WriteLogDb("Wrong query result");
-		WriteLogDb(rez);
+		//Log("Wrong query result");
+		//WriteLogDb("Wrong query result");
+		//WriteLogDb(rez);
 	}
 	else
 	{
 		int Fiednum = PQfnumber(res,"access");
 		if (Fiednum<0)
 		{
-			 Log("No access field in query");
-			 WriteLogDb("No access field in query");
-			 WriteLogDb(rez);
+			// Log("No access field in query");
+			// WriteLogDb("No access field in query");
+			// WriteLogDb(rez);
 		}
 		else
 		{

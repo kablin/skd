@@ -156,19 +156,19 @@ void TimerCloseInTread()
 	memset(&sa,0,sizeof(sa));
 	sa.sa_handler=&NullHandler;
 	sigaction(SIGUSR2,&sa,NULL);
-	Log("Start timer");
+	//Log("Start timer");
 	sigset_t sigs;
 	sigemptyset(&sigs);
 	sigaddset(&sigs, SIGUSR2);
 	if(pthread_sigmask(SIG_UNBLOCK, &sigs, NULL) != 0) {
-		WriteLogDb( "TimerCloseInTread pthread_sigmask() failed\n");
+		//WriteLogDb( "TimerCloseInTread pthread_sigmask() failed\n");
 	}
 	struct timeval begin;
 	gettimeofday(&begin,NULL);
 	int rezsl=usleep(OpenTimeOut);
 	if (rezsl!=0)
 	{
-		Log("Stop Timer killed");
+		//Log("Stop Timer killed");
 		return;
 	}
 	WaitForTurn = 0;
@@ -181,7 +181,7 @@ void TimerCloseInTread()
 	set_do_buf(in_output,0);
 	set_do_buf(out_output,0);
 
-	Log("Zakrili po timeru TripodIsOpenin=0");
+	//Log("Zakrili po timeru TripodIsOpenin=0");
 	TripodIsOpenin = 0;
 	TripodIsOpenout = 0;
 	/*char x[10];
@@ -211,12 +211,12 @@ void OpenTripod(char In)
 {
  	//pthread_kill(Closetrip,SIGUSR2);
     WaitForTurn = 1;
-    Log("Otkrivaem TripodIsOpenin=1");
+    //Log("Otkrivaem TripodIsOpenin=1");
     TripodIsOpenin = 1;
     if (In==1)
     {
 	  // TripodIsOpenin = 1;
-    	Log("OPEN IN");
+    	//Log("OPEN IN");
 	   set_do_buf(in_output,1);
       //	pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
       // 	pthread_detach(Closetrip);
@@ -225,7 +225,7 @@ void OpenTripod(char In)
    {
 
 	  // TripodIsOpenout = 1;
-	   Log("OPEN OUT");
+	  // Log("OPEN OUT");
 	   set_do_buf(out_output,1);
 	  // pthread_create(&Closetrip,NULL,TimerCloseInTread,NULL);
 	  //pthread_detach(Closetrip);
@@ -251,12 +251,12 @@ int CardReaded(char *Card,unsigned char com)
 Log(Direction);
 sprintf(s,"%d  ",com);
 Log(s);*/
-    Log("start find cart");
+   // Log("start find cart");
     char* Access=FindCard(Card);
-    Log("card finded");
+   // Log("card finded");
     // Доступ разрешен
-    if (TripodIsOpenin ==0)  Log("TripodIsOpenin== 0 BUDEM OTKRIVAT")  ;
-    else Log("TripodIsOpenin== 1 UZE OTKRITO")  ;
+    //if (TripodIsOpenin ==0)  Log("TripodIsOpenin== 0 BUDEM OTKRIVAT")  ;
+   // else Log("TripodIsOpenin== 1 UZE OTKRITO")  ;
 
 
   //  if((atoi(Access)==2) &&( ((TripodIsOpenin ==0)&&(TripodIsOpenout ==0))|| ((TripodIsOpenin ==1)&&(Enter==1))||(((TripodIsOpenout ==1)&&(Enter==0)))))
@@ -265,14 +265,14 @@ Log(s);*/
 
     if(atoi(Access)==2   )
     {
-    	Log("Access OK");
+    	//Log("Access OK");
        // pthread_kill(Closetrip,SIGUSR2);
     	OpenTripod(Enter);
     	//WriteEntranceLogDb((char*)Card,Direction,Access);
     }
-    Log("start write log");
+   //Log("start write log");
     WriteEntranceLogDb((char*)Card,Direction,Access);
-    Log("end write log");
+    //Log("end write log");
    }
    /* else if (atoi(Access)==2)
     {
